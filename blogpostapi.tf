@@ -19,6 +19,10 @@ variable "aws_region" {
     type = string
 }
 
+variable "dev_cidr" {
+    type = string
+}
+
 data "aws_ami" "linux2" {
     most_recent = true
 
@@ -30,11 +34,33 @@ data "aws_ami" "linux2" {
     }
 }
 
+resource "aws_security_group" "db_security_group" {
+    name = "blogpostapi-db-sg"
+
+    ingress {
+        from_port       = 22
+        to_port         = 22
+        protocol        = "tcp"
+        cidr_blocks     = [var.dev_cidr]
+    }
+
+    egress {
+        from_port       = 0
+        to_port         = 0
+        protocol        = "-1"
+        cidr_blocks     = ["0.0.0.0/0"]
+    }
+
+    tags = {
+        Name = "blogpost-api-db-sg"
+    }
+}
+
 resource "aws_instance" "db_instance" {
     ami = data.aws_ami.linux2.image_id
     associate_public_ip_address = false
     instance_type = var.instance_type
     key_name = var.key_name
-    vpc_security_group_ids = ["foo"]
+    vpc_security_group_ids = [aws_security_group.db_security_group.id]
     subnet_id = var.subnet_id
 }
