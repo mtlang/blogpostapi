@@ -53,5 +53,3 @@ paths:
                 type: "array"
                 items:
                   $ref: "#/components/schemas/GetResponse"
-        400:
-          description: "Invalid status value"
