@@ -1,0 +1,57 @@
+openapi: "3.0.0"
+info:
+  version: "1.0.0"
+  title: "blogpostapi"
+  description: "Basic API to allow creating and viewing blog posts"
+
+components:
+  schemas:
+    PostResponse:
+      type: object
+      properties:
+        title:
+          type: string
+        body:
+          type: string
+
+    GetResponse:
+      type: object
+      properties:
+        post_id:
+          type: string
+        title:
+          type: string
+        body:
+          type: string
+
+paths:
+  /post:
+    post:
+      description: "Create a new blog post"
+      requestBody:
+        description: "Title and body of post to be created"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PostResponse"
+
+      responses:
+        201:
+          description: "Successfully posted"
+        400:
+          description: "Invalid request body"
+  /posts:
+    get:
+      description: "Get all existing blog posts"
+      responses:
+        200:
+          description: "Successfully retrieved posts"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/GetResponse"
+        400:
+          description: "Invalid status value"
