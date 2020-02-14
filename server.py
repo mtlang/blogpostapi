@@ -31,6 +31,8 @@ def post_post():
     connection = sqlite3.connect('blog.db')
     
     connection.execute("INSERT INTO posts (title,body) VALUES(?,?)", new_post_data)
+    connection.commit()
+    connection.close()
 
     return "Successfully posted", 201
 
@@ -50,6 +52,8 @@ def get_posts():
             "body": row[2]
         }
         result.append(blog_post)
+
+    connection.close()
 
     # Return the result
     return jsonify(result)
