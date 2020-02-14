@@ -20,7 +20,7 @@ To deploy a server using the profided terraform file, you will instead need [Ter
 2. Ensure your AWS account has a suitable public subnet and key pair for the server
 3. Run `terraform apply` to create the server
 4. Once the server is created, log in to your server with the username `ec2-user` and the key pair you specified
-5. On the server use `yum` to install `git`, `python3`. SQLite should already be installed.\
+5. On the server use `yum` to install `git`, `python3`. SQLite should already be installed.
 6. Use pip to install flask: `sudo pip3 install flask`
 6. Clone this repository on the server
 7. In the same directory as the python file, run `flask run --host=0.0.0.0`
@@ -29,9 +29,9 @@ To deploy a server using the profided terraform file, you will instead need [Ter
 As I mentioned earlier, this PoC would need some changes before it could be considered production ready. The following are several of those changes:
 
 * Enable termination protection on the EC2 instance
-* Place the instance in a private subnet
+* Place the instance in a private subnet. Remove the public IP address from the instance and remove the 0.0.0.0/0 rule from the security group
 * Use an ALB to make the instance publicly available
 * Use a database engine capable of remote access, and run it separately from the web server
 * Either implement the API using a serverless framework (Lambda, API gateway) or use an auto-scaling group to run as many instances as needed
 
-It would also be useful to flesh the API out with additional methods (delete a post, edit an existing post, etc.).
+It would also be useful to flesh the API out with additional methods (delete a post, edit an existing post, etc)
