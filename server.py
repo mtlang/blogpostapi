@@ -9,7 +9,7 @@ def bad_post_data(error):
 
 @app.route('/post', methods=['POST'])
 def post_post():
-    request_json = request.get_json()
+    request_json = request.get_json(silent=True)
 
     print(f'Recieved post request: {request_json}')
 
