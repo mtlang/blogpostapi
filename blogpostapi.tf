@@ -23,6 +23,10 @@ variable "dev_cidr" {
     type = string
 }
 
+output "instance_ip_address" {
+    value = aws_instance.server_instance.public_ip
+}
+
 data "aws_ami" "linux2" {
     most_recent = true
 
@@ -34,14 +38,21 @@ data "aws_ami" "linux2" {
     }
 }
 
-resource "aws_security_group" "db_security_group" {
-    name = "blogpostapi-db-sg"
+resource "aws_security_group" "server_security_group" {
+    name = "blogpostapi-server-sg"
 
     ingress {
         from_port       = 22
         to_port         = 22
         protocol        = "tcp"
         cidr_blocks     = [var.dev_cidr]
+    }
+
+    ingress {
+        from_port       = 5000
+        to_port         = 5000
+        protocol        = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
     }
 
     egress {
@@ -52,15 +63,19 @@ resource "aws_security_group" "db_security_group" {
     }
 
     tags = {
-        Name = "blogpost-api-db-sg"
+        Name = "blogpostapi-server-sg"
     }
 }
 
-resource "aws_instance" "db_instance" {
+resource "aws_instance" "server_instance" {
     ami = data.aws_ami.linux2.image_id
-    associate_public_ip_address = false
+    associate_public_ip_address = true
     instance_type = var.instance_type
     key_name = var.key_name
-    vpc_security_group_ids = [aws_security_group.db_security_group.id]
+    vpc_security_group_ids = [aws_security_group.server_security_group.id]
     subnet_id = var.subnet_id
+
+    tags = {
+        Name = "blogpostapi-server"
+    }
 }
